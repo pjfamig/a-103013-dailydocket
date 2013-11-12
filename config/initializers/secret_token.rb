@@ -9,4 +9,18 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-A103013Dailydocket::Application.config.secret_key_base = '4c55457193d1a2348a2a2b8e64900b728564f758bf70a03ee64f05f93c49033b6f42886b9ab0bc5d3cd1133ad7fbe7ccb17d5c4eae21aa2d21a52ea5df1161a4'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+
+A103013Dailydocket::Application.config.secret_key_base = secure_token
